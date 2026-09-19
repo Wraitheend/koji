@@ -193,20 +193,28 @@ bool initialize(AppState &state)
     return true;
 }
 
-void cycleSong(AppState &state)
+void cycleSong(AppState& state)
 {
-    int                               song_index;
-    vector<SongEntry>::const_iterator iterator = find(state.player_context.queue.begin(), state.player_context.queue.end(), state.player_context.current_song);
+    PlayerContext &context = state.player_context;
+    vector<SongEntry> &queue = context.queue;
 
-    if (iterator == state.player_context.queue.end())
-        song_index = -1;
-    else
-        song_index = distance(state.player_context.queue.cbegin(), iterator);
+    vector<SongEntry>::const_iterator iterator = std::find(queue.cbegin(), queue.cend(), context.current_song);
 
-    if (song_index + 1 >= state.player_context.queue.size())
-        state.player_context.current_song = state.player_context.queue[0];
+    if (iterator == queue.cend())
+        stopSong(state);
     else
-        state.player_context.current_song = state.player_context.queue[song_index + 1];
+    {
+        const int song_index = distance(state.player_context.queue.cbegin(), iterator) + 1;
+
+        if (state.player_context.repeat_mode == RepeatMode::Track)
+            updateCurrentSong(state);
+        else if (song_index >= queue.size() && context.repeat_mode == RepeatMode::All)
+            context.current_song = queue.front();
+        else if (song_index >= queue.size())
+            stopSong(state);
+        else
+            context.current_song = queue[song_index];
+    }
 
     updateCurrentSong(state);
 }
@@ -227,7 +235,7 @@ bool songCycle(AppState &state)
         mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
 
         if (end_file->reason == MPV_END_FILE_REASON_EOF)
-            cycleSong(state);
+            cycleSong(state);   
     }
 
     return true;
