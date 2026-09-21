@@ -14,7 +14,7 @@ It uses mpv for audio playback and SDL3 for window management.
 ### For Linux
 
 - **Dependencies:** [SDL3](https://github.com/libsdl-org/SDL), [mpv](https://mpv.io/), [taglib](https://taglib.org/) (Install these dependencies using your system's package manager before building)
-- **Installation:** ```git clone https://github.com/GrayyGray/koji.git && make all```
+- **Installation:** ```git clone https://github.com/Wraitheend/koji.git && make all```
 - **Importing Files:** Follow the formatting in [File Formatting](#file-formatting)
 - **Running:** ```./koji```
 

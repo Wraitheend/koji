@@ -57,23 +57,25 @@ void playlistTab(AppState &state)
 
                 if (ImGui::Button("Rename Playlist", ImVec2(avalible_width, 0)))
                 {
-                    state.editor_context.mode        = EditorMode::Rename;
                     state.editor_context.edit_window = true;
+                    state.editor_context.mode        = EditorMode::Rename;
+                    state.editor_context.playlist    = {state.player_context.playlists[index]};
                     state.editor_context.rename      = state.editor_context.playlist.title;
+                    
                 }
 
                 if (ImGui::Button("Edit Playlist Order", ImVec2(avalible_width, 0)))
                 {
+                    state.editor_context.basket_container   = {};
+                    state.editor_context.edit_window        = true;
                     state.editor_context.mode               = EditorMode::Edit;
                     state.editor_context.playlist           = {state.player_context.playlists[index]};
-                    state.editor_context.edit_window        = true;
-                    state.editor_context.basket_container   = {};
                     state.editor_context.playlist_container = getPlaylistSongs(state.player_context.playlists[index]);
                 }
 
                 if (ImGui::Button("Copy Playlist", ImVec2(avalible_width, 0)))
                 {
-                    if (!duplicatePlaylist(state.editor_context.playlist))
+                    if (!duplicatePlaylist(state.player_context.playlists[index]))
                         setNotification(state, "Error Copied Playlist Already Exists");
                     else
                         state.player_context.playlists = getPlaylists();

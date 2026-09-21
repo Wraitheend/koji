@@ -6,17 +6,14 @@
 #include "../../../backend/library/entries.h"
 #include "../../../backend/library/playlists.h"
 #include "../../../backend/utils/color.h"
-#include "../../../frontend/compontents/notification.h"
 #include "buttons.h"
 #include "editor.h"
 #include "imgui.h"
 #include "imgui_internal.h"
-#include "misc/cpp/imgui_stdlib.h"
 
 using namespace std;
 using namespace koji::backend::app;
 using namespace koji::backend::library;
-using namespace koji::frontend::components::notification;
 
 namespace koji::frontend::windows::editor
 {
@@ -131,19 +128,5 @@ void editPlaylistMenu(AppState &state)
     ImGui::EndChild();
 }
 
-void renamePlaylistMenu(AppState &state)
-{
-    ImGui::Text("Renamed Playlist Name: ");
-    ImGui::SameLine();
-    ImGui::InputText("##rename", &state.editor_context.rename);
-    if (ImGui::Button("Submit"))
-    {
-        if (!renamePlaylist(state.editor_context.playlist, state.editor_context.rename))
-            setNotification(state, "Error Rename Playlist Already Exists");
-        else
-            state.player_context.playlists = getPlaylists();
-        state.editor_context.edit_window = false;
-    }
-}
 
 } // namespace koji::frontend::windows::editor
