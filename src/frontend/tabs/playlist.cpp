@@ -16,7 +16,7 @@ namespace koji::frontend::tabs
 
 void playlistTab(AppState &state)
 {
-    if (internal::beginTab("Playlists"))
+    if (internal::beginTab("Playlists", state))
     {
         ImGui::BeginTable("playlistTable", 1, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 

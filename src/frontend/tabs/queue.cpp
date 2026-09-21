@@ -15,7 +15,7 @@ namespace koji::frontend::tabs
 void queueTab(AppState &state)
 {
     const ImVec4 selected_background_color = backend::utils::darkenColor(ImGui::GetStyleColorVec4(ImGuiCol_HeaderHovered), 0.2f);
-    if (internal::beginTab("Queue"))
+    if (internal::beginTab("Queue", state))
     {
         ImGui::BeginTable("queueTable", 4, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 

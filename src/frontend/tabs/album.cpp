@@ -14,7 +14,7 @@ namespace koji::frontend::tabs
 
 void albumTab(AppState &state)
 {
-    if (internal::beginTab("Albums"))
+    if (internal::beginTab("Albums", state))
     {
         ImGui::BeginTable("albumTable", 2, ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_Borders);
 

@@ -13,6 +13,6 @@ void playlistTab(koji::backend::app::AppState &state);
 
 namespace koji::frontend::tabs::internal
 {
-bool beginTab(const char *label);
+bool beginTab(const char *label, koji::backend::app::AppState &state);
 void endTab();
 } // namespace koji::frontend::tabs::internal
