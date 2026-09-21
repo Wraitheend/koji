@@ -15,8 +15,8 @@ using namespace frontend;
 int main(int, char **)
 {
     app::AppState state;
-    state.width  = 1280;
-    state.height = 720;
+    state.width  = 1920;
+    state.height = 1080;
     state.title  = "koji";
 
     if (!app::initialize(state))

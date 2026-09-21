@@ -122,11 +122,8 @@ bool initialize(AppState &state)
         return false;
     }
 
-    state.display_content_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-    int scaled_width            = (int)(state.width * state.display_content_scale) * 2;
-    int scaled_height           = (int)(state.height * state.display_content_scale) * 2;
 
-    state.window = SDL_CreateWindow(state.title, scaled_width, scaled_height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN);
+    state.window = SDL_CreateWindow(state.title, state.width, state.height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN);
     if (!state.window)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Error creating window", state.window);
@@ -154,6 +151,8 @@ bool initialize(AppState &state)
 
     ImGui::StyleColorsDark();
 
+    state.display_content_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
+
     ImGuiStyle &style = ImGui::GetStyle();
     style.ScaleAllSizes(state.display_content_scale);
     style.FontScaleDpi = state.display_content_scale;
@@ -163,7 +162,7 @@ bool initialize(AppState &state)
 
     ImFontConfig font_config{};
     font_config.FontDataOwnedByAtlas = false;
-    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start), _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_end - _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start, 36.0f, &font_config);
+    state.io->Fonts->AddFontFromMemoryTTF(const_cast<unsigned char *>(_binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start), _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_end - _binary_dependencies_assets_GoNotoCurrent_Regular_ttf_start, 54.0f, &font_config);
 
     SDL_ShowWindow(state.window);
 
