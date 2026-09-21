@@ -27,17 +27,12 @@ void renderPlayer(const PlayerContext &context)
     std::string volume_percentage = ("Vol:" + std::to_string(context.volume) + "%");
     std::string position_time     = context.current_song != SongEntry{} ? backend::utils::formatTime(context.position_seconds) : "--:--";
     std::string duration_time     = context.current_song != SongEntry{} ? backend::utils::formatTime(context.current_song.duration) : "--:--";
-
-    float playing_progress    = (context.current_song != SongEntry{} && context.current_song.duration > 0.0f) ? (context.position_seconds / context.current_song.duration) : 0.0f;
-    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + 200.0f + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;
+    
+    float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);
 
     ImGui::Text("%s/%s", position_time.c_str(), duration_time.c_str());
-    ImGui::SameLine();
-    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 4.0f);
-    ImGui::ProgressBar(playing_progress, ImVec2(200, 20), "");
-    ImGui::PopStyleVar();
     ImGui::SameLine();
 
     ImGui::TextUnformatted(volume_percentage.c_str());
