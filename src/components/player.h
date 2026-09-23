@@ -9,6 +9,9 @@
 #include "../library/entries.h"
 #include "../library/library.h"
 #include "utils.h"
+#include "queue.h"
+#include "albums/albums.h"
+#include "playlists.h"
 
 enum class RepeatMode
 {
@@ -17,45 +20,8 @@ enum class RepeatMode
     Track
 };
 
-class Queue
-{
-  public:
-    Queue();
-
-    std::vector<SongEntry>       queue;
-    std::vector<SongEntry>       unshuffled_queue;
-    TreeColumnSet                collumns;
-    Gtk::Box                     box;
-    Gtk::ScrolledWindow          window;
-    Gtk::TreeView                tree;
-    Glib::RefPtr<Gtk::ListStore> tree_refrence;
-};
-
-class Albums
-{
-  public:
-    Albums();
-
-    std::vector<AlbumEntry>      albums = koji::library::getAlbums();
-    TreeColumnSet                collumns;
-    Gtk::Box                     box;
-    Gtk::ScrolledWindow          window;
-    Gtk::TreeView                tree;
-    Glib::RefPtr<Gtk::ListStore> tree_refrence;
-};
-
-class Playlists
-{
-  public:
-    Playlists();
-
-    std::vector<PlaylistEntry>   playlists = koji::library::getPlaylists();
-    TreeColumnSet                collumns;
-    Gtk::Box                     box;
-    Gtk::ScrolledWindow          window;
-    Gtk::TreeView                tree;
-    Glib::RefPtr<Gtk::ListStore> tree_refrence;
-};
+// Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
+// selection->signal_changed().connect(sigc::mem_fun(*this, &Queue::on_selection_changed));
 
 class Player
 {
