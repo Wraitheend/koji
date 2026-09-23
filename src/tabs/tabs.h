@@ -3,10 +3,10 @@
 #pragma once
 
 #include <format>
+#include <vector>
 #include <gtkmm.h>
 #include "../library/entries.h"
 #include "../library/library.h"
-
 
 std::string formatTime(const float seconds);
 
@@ -14,16 +14,17 @@ class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
 {
   public:
     std::deque<Gtk::TreeModelColumn<Glib::ustring>> string_columns;
-    Gtk::TreeModelColumn<Glib::ustring> &addStringColumn();
+    Gtk::TreeModelColumn<Glib::ustring>            &addStringColumn();
 };
 
 Glib::RefPtr<Gtk::ListStore> setupStringTreeView(Gtk::TreeView &tree_view, TreeColumnSet &column_set, const std::vector<Glib::ustring> &column_headers);
 
-class Queue
+class QueueTab
 {
   public:
-    Queue();
+    QueueTab();
 
+    std::vector<SongEntry>       queue;
     TreeColumnSet                collumns;
     Gtk::Box                     box;
     Gtk::ScrolledWindow          window;
@@ -31,11 +32,12 @@ class Queue
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
 };
 
-class Albums
+class AlbumsTab
 {
   public:
-    Albums();
+    AlbumsTab();
 
+    std::vector<AlbumEntry>      albums = koji::library::getAlbums();
     TreeColumnSet                collumns;
     Gtk::Box                     box;
     Gtk::ScrolledWindow          window;
@@ -43,11 +45,12 @@ class Albums
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
 };
 
-class Playlists
+class PlaylistsTab
 {
   public:
-    Playlists();
+    PlaylistsTab();
 
+    std::vector<PlaylistEntry>   playlists = koji::library::getPlaylists();
     TreeColumnSet                collumns;
     Gtk::Box                     box;
     Gtk::ScrolledWindow          window;

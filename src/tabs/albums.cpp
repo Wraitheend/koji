@@ -2,9 +2,8 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "tabs.h"
-#include <vector>
 
-Albums::Albums()
+AlbumsTab::AlbumsTab()
 {
     window.set_child(tree);
 
@@ -14,19 +13,15 @@ Albums::Albums()
 
     box.append(window);
 
-    std::vector<Glib::ustring> queue_column_headers = {"Title", "Album", "Artist", "Duration"};
+    std::vector<Glib::ustring> queue_column_headers = {"Artist", "Album"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
-    std::vector<AlbumEntry> albums = koji::library::getAlbums();
-    std::vector<SongEntry>  songs  = koji::library::getAlbumSongs(albums[0]);
 
     // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
-    for (SongEntry &song : songs)
+    for (AlbumEntry &album : albums)
     {
         auto row                        = *(tree_refrence->append());
-        row[collumns.string_columns[0]] = song.title;
-        row[collumns.string_columns[1]] = song.album;
-        row[collumns.string_columns[2]] = song.artist;
-        row[collumns.string_columns[3]] = formatTime(song.duration);
+        row[collumns.string_columns[0]] = album.artist;
+        row[collumns.string_columns[1]] = album.title;
     }
 }
