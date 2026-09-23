@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "player.h"
 #include "utils.h"
-#include "components.h"
 
 Playlists::Playlists()
 {
     window.set_child(tree);
+    tree.set_enable_search(false);
 
     // Only show the scrollbars when they are necessary:
     window.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
@@ -16,7 +17,6 @@ Playlists::Playlists()
 
     std::vector<Glib::ustring> queue_column_headers = {"Playlist"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
-
 
     // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
     for (PlaylistEntry &playlist : playlists)

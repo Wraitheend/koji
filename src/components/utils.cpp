@@ -15,7 +15,7 @@ std::string formatTime(const float seconds)
 
     if (hours > 0)
         return std::format("{:02}:{:02}:{:02}", hours, minutes, secs);
-        
+
     return std::format("{:02}:{:02}", minutes, secs);
 }
 

@@ -23,6 +23,7 @@ It uses mpv for audio playback and SDL3 for window management.
 -  Create a feature request sorry but i ain't freely supporting other systems than linux unless people want it.
 
 ## Keybinding
+- `Esc`: Quits the program
 - `S`: Toggle shuffle
 - `R`: Toggle repeat mode
 - `X`: Stop music

@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
+#include "player.h"
 #include "utils.h"
-#include "components.h"
 
 Queue::Queue()
 {
     window.set_child(tree);
+    tree.set_enable_search(false);
 
     // Only show the scrollbars when they are necessary:
     window.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);

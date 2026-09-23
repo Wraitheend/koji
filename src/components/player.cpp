@@ -1,25 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include <iostream>
+#include "player.h"
 #include <algorithm>
+#include <clocale>
 #include <filesystem>
+#include <iostream>
 #include <iterator>
 #include <string>
 #include <vector>
-#include <clocale>
-
 #include "../library/entries.h"
-
 #include "utils.h"
-#include "components.h"
 
 using namespace std;
 
 bool Player::init()
 {
     setlocale(LC_NUMERIC, "C");
-    
+
     mpv_context = mpv_create();
 
     if (!mpv_context)
@@ -38,17 +36,13 @@ bool Player::init()
 
     mpv_set_option_string(mpv_context, "vo", "null");
     mpv_set_option_string(mpv_context, "audio-format", "s16le");
-    mpv_set_property_string(mpv_context, "volume", to_string(volume).c_str());
+    updateVolume();
     return true;
 }
 
-void Player::cleanup()
-{
-    mpv_destroy(mpv_context);
-}
+void Player::cleanup() { mpv_destroy(mpv_context); }
 
-
-void Player::togglePause() 
+void Player::togglePause()
 {
     paused = !paused;
 
@@ -58,7 +52,7 @@ void Player::togglePause()
         mpv_set_property_string(mpv_context, "pause", "no");
 }
 
-void Player::toggleRepeat() 
+void Player::toggleRepeat()
 {
     if (repeat_mode == RepeatMode::Off)
     {
@@ -74,7 +68,7 @@ void Player::toggleRepeat()
     }
 }
 
-void Player::toggleShuffle() 
+void Player::toggleShuffle()
 {
     shuffle = !shuffle;
 
@@ -90,6 +84,7 @@ void Player::toggleShuffle()
         queue.unshuffled_queue.clear();
     }
 }
+void Player::updateVolume() { mpv_set_property_string(mpv_context, "volume", to_string(volume).c_str()); }
 
 void Player::stopPlayback()
 {
@@ -105,13 +100,6 @@ void Player::stopPlayback()
 //     updatePause(player_context);
 //     const char *play_command[] = {"loadfile", player_context.current_song.path.c_str(), "replace", nullptr};
 //     mpv_command(player_context.mpv_context, play_command);
-// }
-
-
-// void updateVolume(PlayerContext &player_context, const int level = 0)
-// {
-//     player_context.volume += level;
-//     mpv_set_property_string(player_context.mpv_context, "volume", to_string(player_context.volume).c_str());
 // }
 
 // void addSongsToQueue(PlayerContext &player_context, vector<SongEntry> &songs)
@@ -130,8 +118,6 @@ void Player::stopPlayback()
 
 //     player_context.queue.insert(player_context.queue.end(), songs.begin(), songs.end());
 // }
-
-
 
 // void cycleSong(PlayerContext& player_context)
 // {
@@ -175,34 +161,8 @@ void Player::stopPlayback()
 //         mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
 
 //         if (end_file->reason == MPV_END_FILE_REASON_EOF)
-//             cycleSong(player_context);   
+//             cycleSong(player_context);
 //     }
-
-//     return true;
-// }
-
-// bool keyCycle(PlayerContext &player_context)
-// {
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Q))
-//         return false;
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_X))
-//         stopSong(player_context);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Space))
-//         togglePause(player_context);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_S))
-//         toggleShuffle(player_context);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_R))
-//         toggleRepeatMode(player_context.repeat_mode);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Minus) && player_context.volume - 5 >= 0)
-//         updateVolume(player_context, -5);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Equal) && player_context.volume + 5 <= 100)
-//         updateVolume(player_context, 5);
 
 //     return true;
 // }
@@ -217,4 +177,3 @@ void Player::stopPlayback()
 
 //     return true;
 // }
-
