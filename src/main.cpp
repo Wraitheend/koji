@@ -15,7 +15,12 @@ class Window : public Gtk::Window
 
     // Child widgets:
     Gtk::Notebook tabbar_notebook;
-    Gtk::Label    queue_label, album_label, playlist_label;
+
+    Gtk::ListBox queue_box;
+    Gtk::Box     queue_container;
+    Gtk::Label    queue_label;
+    
+    Gtk::Label album_label, playlist_label;
 };
 
 Window::Window() : queue_label("Contents of queue tab"), album_label("Contents of album tab"), playlist_label("Contents of playlist tab")
@@ -23,6 +28,15 @@ Window::Window() : queue_label("Contents of queue tab"), album_label("Contents o
     set_title("Koji");
     set_default_size(400, 200);
     set_child(tabbar_notebook);
+
+    queue_label.set_valign(Gtk::Align::START);
+    album_label.set_valign(Gtk::Align::START);
+    playlist_label.set_valign(Gtk::Align::START);
+
+    queue_label.set_halign(Gtk::Align::START);
+    album_label.set_halign(Gtk::Align::START);
+    playlist_label.set_halign(Gtk::Align::START);
+    
 
     // Add the Notebook pages:
     tabbar_notebook.append_page(queue_label, "Queue");
