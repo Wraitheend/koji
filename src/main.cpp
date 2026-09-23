@@ -5,22 +5,37 @@
 #include <gtkmm.h>
 
 // Tree model columns:
-class ModelColumns : public Gtk::TreeModel::ColumnRecord
+class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
 {
-    public:
-    ModelColumns()
+public:
+    std::deque<Gtk::TreeModelColumn<Glib::ustring>> string_columns;
+
+    Gtk::TreeModelColumn<Glib::ustring>& add_string_column()
     {
-        add(collumn_id);
-        add(collumn_name);
-        add(collumn_number);
-        add(collumn_percentage);
+        string_columns.emplace_back();
+        Gtk::TreeModelColumn<Glib::ustring>& new_column = string_columns.back();
+        add(new_column);
+        return new_column;
+    }
+};
+
+Glib::RefPtr<Gtk::ListStore> setup_string_tree_view(Gtk::TreeView& tree_view, TreeColumnSet& column_set, const std::vector<Glib::ustring>& column_headers)
+{
+    for (unsigned int header_index = 0; header_index < column_headers.size(); ++header_index)
+    {
+        column_set.add_string_column();
     }
 
-    Gtk::TreeModelColumn<unsigned int>  collumn_id;
-    Gtk::TreeModelColumn<Glib::ustring> collumn_name;
-    Gtk::TreeModelColumn<short>         collumn_number;
-    Gtk::TreeModelColumn<int>           collumn_percentage;
-};
+    Glib::RefPtr<Gtk::ListStore> list_store_reference = Gtk::ListStore::create(column_set);
+    tree_view.set_model(list_store_reference);
+
+    for (unsigned int header_index = 0; header_index < column_headers.size(); ++header_index)
+    {
+        tree_view.append_column(column_headers[header_index], column_set.string_columns[header_index]);
+    }
+
+    return list_store_reference;
+}
 
 class Window : public Gtk::Window
 {
@@ -32,9 +47,9 @@ class Window : public Gtk::Window
     // Signal handlers:
     void onNotebookSwitchPage(Gtk::Widget *page, guint page_num);
 
-    ModelColumns queue_tree_collumns;
-    ModelColumns album_tree_collumns;
-    ModelColumns playlist_tree_collumns;
+    TreeColumnSet queue_tree_collumns;
+    TreeColumnSet album_tree_collumns;
+    TreeColumnSet playlist_tree_collumns;
 
     // Child widgets:
     Gtk::Notebook tabbar_notebook;
@@ -67,44 +82,17 @@ Window::Window() // : queue_tab_box(Gtk::Orientation::VERTICAL), album_label("Co
 
     queue_tab_box.append(queue_scrollable_window);
 
-    // Create the Tree model:
-    queue_tree_refrence = Gtk::ListStore::create(queue_tree_collumns);
-    queue_tree.set_model(queue_tree_refrence);
+    // Create the Tree model and view columns:
+    std::vector<Glib::ustring> queue_column_headers = {"Title", "Album", "Artist", "Duration"};
+    queue_tree_refrence = setup_string_tree_view(queue_tree, queue_tree_collumns, queue_column_headers);
 
     // Fill the TreeView's model
-    auto row                        = *(queue_tree_refrence->append());
-    row[queue_tree_collumns.collumn_id]         = 1;
-    row[queue_tree_collumns.collumn_name]       = "Billy Bob";
-    row[queue_tree_collumns.collumn_number]     = 10;
-    row[queue_tree_collumns.collumn_percentage] = 15;
+    auto row = *(queue_tree_refrence->append());
+    row[queue_tree_collumns.string_columns[0]] = "1";
+    row[queue_tree_collumns.string_columns[1]] = "Billy Bob";
+    row[queue_tree_collumns.string_columns[2]] = "10";
+    row[queue_tree_collumns.string_columns[3]] = "15";
 
-    row                             = *(queue_tree_refrence->append());
-    row[queue_tree_collumns.collumn_id]         = 2;
-    row[queue_tree_collumns.collumn_name]       = "Joey Jojo";
-    row[queue_tree_collumns.collumn_number]     = 20;
-    row[queue_tree_collumns.collumn_percentage] = 40;
-
-    row                             = *(queue_tree_refrence->append());
-    row[queue_tree_collumns.collumn_id]         = 3;
-    row[queue_tree_collumns.collumn_name]       = "Rob McRoberts";
-    row[queue_tree_collumns.collumn_number]     = 30;
-    row[queue_tree_collumns.collumn_percentage] = 70;
-
-    // Add the TreeView's view columns:
-    // This number will be shown with the default numeric formatting.
-    queue_tree.append_column("Title", queue_tree_collumns.collumn_id);
-    queue_tree.append_column("Album", queue_tree_collumns.collumn_name);
-
-    queue_tree.append_column_numeric("Artist", queue_tree_collumns.collumn_number, "%010d" /* 10 digits, using leading zeroes. */);
-
-    // Display a progress bar instead of a decimal number:
-    auto cell       = Gtk::make_managed<Gtk::CellRendererProgress>();
-    int  cols_count = queue_tree.append_column("Duration", *cell);
-    auto pColumn    = queue_tree.get_column(cols_count - 1);
-    if (pColumn)
-    {
-        pColumn->add_attribute(cell->property_value(), queue_tree_collumns.collumn_percentage);
-    }
 
     // Make all the columns reorderable:
     // This is not necessary, but it's nice to show the feature.
