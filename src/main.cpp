@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include <iostream>
 #include <gtkmm.h>
+#include <string>
 
 class Window : public Gtk::Window
 {
@@ -26,7 +27,7 @@ class Window : public Gtk::Window
 Window::Window() : queue_label("Contents of queue tab"), album_label("Contents of album tab"), playlist_label("Contents of playlist tab")
 {
     set_title("Koji");
-    set_default_size(400, 200);
+    set_default_size(1920, 1080);
     set_child(tabbar_notebook);
 
     queue_label.set_valign(Gtk::Align::START);
@@ -36,12 +37,30 @@ Window::Window() : queue_label("Contents of queue tab"), album_label("Contents o
     queue_label.set_halign(Gtk::Align::START);
     album_label.set_halign(Gtk::Align::START);
     playlist_label.set_halign(Gtk::Align::START);
+
+    // queue_box.set_margin_top();
+    
+    queue_container.append(queue_label);
+    queue_container.append(queue_box);
     
 
     // Add the Notebook pages:
-    tabbar_notebook.append_page(queue_label, "Queue");
+    tabbar_notebook.append_page(queue_container, "Queue");
     tabbar_notebook.append_page(album_label, "Albums");
     tabbar_notebook.append_page(playlist_label, "Playlists");
+
+
+    for (int i = 0; i < 5; ++i) {
+        auto button = Gtk::Button(Glib::ustring("Queue Item " + std::to_string(i)));
+        
+        // Optional: Connect signal
+        // button.signal_clicked().connect(sigc::mem_fun(*this, &Window::onButtonClick));
+
+        button.set_valign(Gtk::Align::START);
+        button.set_halign(Gtk::Align::START);
+
+        queue_box.append(button);
+    }
 
     tabbar_notebook.signal_switch_page().connect(sigc::mem_fun(*this, &Window::onNotebookSwitchPage));
 }
