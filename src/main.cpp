@@ -1,55 +1,50 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
-#include "frontend/windows/main/main.h"
-#include "backend/app.h"
-#include "frontend/compontents/notification.h"
-#include "frontend/compontents/player.h"
-#include "frontend/tabs/tabs.h"
-#include "frontend/windows/editor/editor.h"
-#include "imgui.h"
+#include <iostream>
+#include <gtkmm.h>
 
-using namespace koji;
-using namespace backend;
-using namespace frontend;
-
-int main(int, char **)
+class Window : public Gtk::Window
 {
-    app::AppState state;
-    state.width  = 1920;
-    state.height = 1080;
-    state.title  = "koji";
+  public:
+    Window();
+    virtual ~Window();
 
-    if (!app::initialize(state))
-    {
-        return 1;
-    }
+  protected:
+    // Signal handlers:
+    void onNotebookSwitchPage(Gtk::Widget *page, guint page_num);
 
-    bool done = false;
-    while (!done)
-    {
-        if (!app::pollEvents(state))
-            done = true;
+    // Child widgets:
+    Gtk::Notebook tabbar_notebook;
+    Gtk::Label    queue_label, album_label, playlist_label;
+};
 
-        windows::main::beginMainWindow(state);
+Window::Window() : queue_label("Contents of queue tab"), album_label("Contents of album tab"), playlist_label("Contents of playlist tab")
+{
+    set_title("Koji");
+    set_default_size(400, 200);
+    set_child(tabbar_notebook);
 
-        ImGui::BeginTabBar("tabBar", ImGuiTabBarFlags_None);
+    // Add the Notebook pages:
+    tabbar_notebook.append_page(queue_label, "Queue");
+    tabbar_notebook.append_page(album_label, "Albums");
+    tabbar_notebook.append_page(playlist_label, "Playlists");
 
-        tabs::queueTab(state);
-        tabs::albumTab(state);
-        tabs::playlistTab(state);
+    tabbar_notebook.signal_switch_page().connect(sigc::mem_fun(*this, &Window::onNotebookSwitchPage));
+}
 
-        ImGui::EndTabBar();
+Window::~Window() {}
 
-        components::player::renderPlayer(state.player_context);
+void Window::onNotebookSwitchPage(Gtk::Widget * /* page */, guint page_num)
+{
+    std::cout << "Switched to tab with index " << page_num << std::endl;
 
-        if (state.editor_context.edit_window)
-            windows::editor::editorWindow(state);
+    // You can also use tabbar_notebook.get_current_page() to get this index.
+}
 
-        components::notification::drawNotification(state);
+int main(int argc, char *argv[])
+{
+    auto app = Gtk::Application::create("org.gtkmm.example");
 
-        windows::main::endMainWindow(state);
-    }
-
-    app::cleanup(state);
-    return 0;
+    // Shows the window and returns when it is closed.
+    return app->make_window_and_run<Window>(argc, argv);
 }
