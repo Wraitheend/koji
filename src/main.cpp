@@ -7,19 +7,19 @@
 // Tree model columns:
 class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
 {
-public:
+  public:
     std::deque<Gtk::TreeModelColumn<Glib::ustring>> string_columns;
 
-    Gtk::TreeModelColumn<Glib::ustring>& add_string_column()
+    Gtk::TreeModelColumn<Glib::ustring> &add_string_column()
     {
         string_columns.emplace_back();
-        Gtk::TreeModelColumn<Glib::ustring>& new_column = string_columns.back();
+        Gtk::TreeModelColumn<Glib::ustring> &new_column = string_columns.back();
         add(new_column);
         return new_column;
     }
 };
 
-Glib::RefPtr<Gtk::ListStore> setup_string_tree_view(Gtk::TreeView& tree_view, TreeColumnSet& column_set, const std::vector<Glib::ustring>& column_headers)
+Glib::RefPtr<Gtk::ListStore> setup_string_tree_view(Gtk::TreeView &tree_view, TreeColumnSet &column_set, const std::vector<Glib::ustring> &column_headers)
 {
     for (unsigned int header_index = 0; header_index < column_headers.size(); ++header_index)
     {
@@ -55,11 +55,11 @@ class Window : public Gtk::Window
     Gtk::Notebook tabbar_notebook;
 
     // Queue Child widgets:
-    Gtk::Box queue_tab_box;
+    Gtk::Box                     queue_tab_box;
     Gtk::ScrolledWindow          queue_scrollable_window;
     Gtk::TreeView                queue_tree;
     Glib::RefPtr<Gtk::ListStore> queue_tree_refrence;
-    
+
     // Album Child widgets:
     Gtk::Label album_label, playlist_label;
 
@@ -84,15 +84,14 @@ Window::Window() // : queue_tab_box(Gtk::Orientation::VERTICAL), album_label("Co
 
     // Create the Tree model and view columns:
     std::vector<Glib::ustring> queue_column_headers = {"Title", "Album", "Artist", "Duration"};
-    queue_tree_refrence = setup_string_tree_view(queue_tree, queue_tree_collumns, queue_column_headers);
+    queue_tree_refrence                             = setup_string_tree_view(queue_tree, queue_tree_collumns, queue_column_headers);
 
     // Fill the TreeView's model
-    auto row = *(queue_tree_refrence->append());
+    auto row                                   = *(queue_tree_refrence->append());
     row[queue_tree_collumns.string_columns[0]] = "1";
     row[queue_tree_collumns.string_columns[1]] = "Billy Bob";
     row[queue_tree_collumns.string_columns[2]] = "10";
     row[queue_tree_collumns.string_columns[3]] = "15";
-
 
     // Make all the columns reorderable:
     // This is not necessary, but it's nice to show the feature.
