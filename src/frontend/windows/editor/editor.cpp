@@ -10,9 +10,9 @@
 #include "../../../backend/library/entries.h"
 #include "../../../backend/library/playlists.h"
 #include "../../../frontend/compontents/notification.h"
-#include "misc/cpp/imgui_stdlib.h"
 #include "imgui.h"
 #include "menus.h"
+#include "misc/cpp/imgui_stdlib.h"
 
 using namespace std;
 using namespace koji::backend::app;
@@ -47,7 +47,7 @@ void editorWindow(AppState &state)
             else
                 state.player_context.playlists = getPlaylists();
             state.editor_context.edit_window = false;
-    }
+        }
     }
 
     ImGui::PopItemFlag();

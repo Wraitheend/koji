@@ -128,5 +128,4 @@ void editPlaylistMenu(AppState &state)
     ImGui::EndChild();
 }
 
-
 } // namespace koji::frontend::windows::editor

@@ -27,7 +27,7 @@ void renderPlayer(const PlayerContext &context)
     std::string volume_percentage = ("Vol:" + std::to_string(context.volume) + "%");
     std::string position_time     = context.current_song != SongEntry{} ? backend::utils::formatTime(context.position_seconds) : "--:--";
     std::string duration_time     = context.current_song != SongEntry{} ? backend::utils::formatTime(context.current_song.duration) : "--:--";
-    
+
     float right_segment_width = ImGui::CalcTextSize((position_time + "/" + duration_time).c_str()).x + ImGui::CalcTextSize(volume_percentage.c_str()).x + ImGui::CalcTextSize(shuffle_mode).x + ImGui::CalcTextSize(repeat_mode).x + ImGui::GetStyle().ItemSpacing.x * 4.0f;
 
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - right_segment_width);

@@ -1,16 +1,15 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include "albums.h"
 #include <algorithm>
 #include <iostream>
 #include <taglib/fileref.h>
-#include "../../backend/utils/filesystem.h"
+#include "library.h"
+#include "xdg.h"
 
 using namespace std;
-using namespace koji::backend::utils;
 
-namespace koji::backend::library
+namespace koji::library
 {
 
 struct TrackEntry
@@ -101,4 +100,4 @@ vector<SongEntry> getAlbumSongs(const AlbumEntry &album)
 
     return songs;
 }
-} // namespace koji::backend::library
+} // namespace koji::library

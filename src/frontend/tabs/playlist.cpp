@@ -61,7 +61,6 @@ void playlistTab(AppState &state)
                     state.editor_context.mode        = EditorMode::Rename;
                     state.editor_context.playlist    = {state.player_context.playlists[index]};
                     state.editor_context.rename      = state.editor_context.playlist.title;
-                    
                 }
 
                 if (ImGui::Button("Edit Playlist Order", ImVec2(avalible_width, 0)))

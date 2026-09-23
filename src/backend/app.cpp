@@ -122,7 +122,6 @@ bool initialize(AppState &state)
         return false;
     }
 
-
     state.window = SDL_CreateWindow(state.title, state.width, state.height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN);
     if (!state.window)
     {
@@ -192,10 +191,10 @@ bool initialize(AppState &state)
     return true;
 }
 
-void cycleSong(AppState& state)
+void cycleSong(AppState &state)
 {
-    PlayerContext &context = state.player_context;
-    vector<SongEntry> &queue = context.queue;
+    PlayerContext     &context = state.player_context;
+    vector<SongEntry> &queue   = context.queue;
 
     vector<SongEntry>::const_iterator iterator = std::find(queue.cbegin(), queue.cend(), context.current_song);
 
@@ -234,7 +233,7 @@ bool songCycle(AppState &state)
         mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
 
         if (end_file->reason == MPV_END_FILE_REASON_EOF)
-            cycleSong(state);   
+            cycleSong(state);
     }
 
     return true;

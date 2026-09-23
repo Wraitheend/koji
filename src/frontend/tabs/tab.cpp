@@ -11,7 +11,7 @@ bool beginTab(const char *label, AppState &state)
 {
     if (!ImGui::BeginTabItem(label, nullptr, ImGuiTabItemFlags_NoArrowNav))
         return false;
-    
+
     // state.display_content_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
     // int scaled_width            = (int)(state.width * state.display_content_scale) * 2;
     // int scaled_height           = (int)(state.height * state.display_content_scale) * 2;
@@ -19,7 +19,7 @@ bool beginTab(const char *label, AppState &state)
     ImGui::BeginChild("tabFrame", ImVec2(0, -125), ImGuiChildFlags_NavFlattened, ImGuiWindowFlags_NoNavFocus);
     ImGui::PushItemFlag(ImGuiItemFlags_NoTabStop, true);
     ImGui::Separator();
-    
+
     return true;
 }
 

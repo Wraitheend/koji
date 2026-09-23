@@ -1,12 +1,10 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 #pragma once
 
 #include <filesystem>
 #include <string>
 
-namespace koji::backend::library
-{
 struct AlbumEntry
 {
     std::filesystem::path path;
@@ -31,4 +29,3 @@ struct SongEntry
     float                 duration;
     bool                  operator==(const SongEntry &) const = default;
 };
-} // namespace koji::backend::library
