@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include "tabs.h"
+#include "utils.h"
+#include "components.h"
 
-PlaylistsTab::PlaylistsTab()
+Albums::Albums()
 {
     window.set_child(tree);
 
@@ -13,14 +14,15 @@ PlaylistsTab::PlaylistsTab()
 
     box.append(window);
 
-    std::vector<Glib::ustring> queue_column_headers = {"Playlist"};
+    std::vector<Glib::ustring> queue_column_headers = {"Artist", "Album"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
 
     // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
-    for (PlaylistEntry &playlist : playlists)
+    for (AlbumEntry &album : albums)
     {
         auto row                        = *(tree_refrence->append());
-        row[collumns.string_columns[0]] = playlist.title;
+        row[collumns.string_columns[0]] = album.artist;
+        row[collumns.string_columns[1]] = album.title;
     }
 }

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <gtkmm.h>
-#include "tabs/tabs.h"
+#include "components/components.h"
 
 class Window : public Gtk::Window
 {
@@ -20,9 +20,7 @@ class Window : public Gtk::Window
     // Main
     Gtk::Notebook tabbar_notebook;
 
-    QueueTab     queue_tab;
-    AlbumsTab    albums_tab;
-    PlaylistsTab playlists_tab;
+    Player player;
 };
 
 Window::Window()
@@ -34,9 +32,12 @@ Window::Window()
     // Add the TreeView, inside a ScrolledWindow, with the button underneath:
 
     // Add the Notebook pages:
-    tabbar_notebook.append_page(queue_tab.box, "Queue");
-    tabbar_notebook.append_page(albums_tab.box, "Albums");
-    tabbar_notebook.append_page(playlists_tab.box, "Playlists");
+    if (!player.init())
+        return;
+    
+    tabbar_notebook.append_page(player.queue.box, "Queue");
+    tabbar_notebook.append_page(player.albums.box, "Albums");
+    tabbar_notebook.append_page(player.playlists.box, "Playlists");
 
     tabbar_notebook.signal_switch_page().connect(sigc::mem_fun(*this, &Window::onNotebookSwitchPage));
 }

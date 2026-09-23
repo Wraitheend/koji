@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
 
-#include "tabs.h"
+#include "utils.h"
 
 std::string formatTime(const float seconds)
 {
