@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "queue.h"
+#include <iostream>
 
 Queue::Queue()
 {
@@ -18,6 +19,14 @@ Queue::Queue()
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
     // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
+    Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
+    selection->signal_changed().connect(sigc::mem_fun(*this, &Queue::on_selection_changed));
+}
+
+void Queue::updateView()
+{
+    if (!(tree_refrence->children().size() == 0))
+        tree_refrence->clear();
     for (SongEntry &song : queue)
     {
         auto row                        = *(tree_refrence->append());
@@ -26,4 +35,17 @@ Queue::Queue()
         row[collumns.string_columns[2]] = song.artist;
         row[collumns.string_columns[3]] = formatTime(song.duration);
     }
+}
+
+void Queue::on_selection_changed()
+{
+    Gtk::TreeModel::iterator iter = tree.get_selection()->get_selected();
+
+    if (!iter)
+        return;
+
+    Gtk::TreeModel::Row row = *iter;
+    Glib::ustring title = row[collumns.string_columns[0]];
+
+    std::cout << "Selected: " << title << std::endl;
 }

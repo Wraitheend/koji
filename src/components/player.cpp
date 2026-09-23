@@ -37,6 +37,10 @@ bool Player::init()
     mpv_set_option_string(mpv_context, "vo", "null");
     mpv_set_option_string(mpv_context, "audio-format", "s16le");
     updateVolume();
+
+    // queue.queue = koji::library::getAlbumSongs(albums.albums[0]);
+    // queue.updateView();
+    
     return true;
 }
 

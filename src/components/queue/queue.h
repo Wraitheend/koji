@@ -11,6 +11,7 @@ class Queue
 {
   public:
     Queue();
+    void updateView();
 
     std::vector<SongEntry>       queue;
     std::vector<SongEntry>       unshuffled_queue;
@@ -18,5 +19,7 @@ class Queue
     Gtk::Box                     box;
     Gtk::ScrolledWindow          window;
     Gtk::TreeView                tree;
-    Glib::RefPtr<Gtk::ListStore> tree_refrence;
+   Glib::RefPtr<Gtk::ListStore> tree_refrence;
+  private:
+    void on_selection_changed();
 };

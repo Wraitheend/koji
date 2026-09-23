@@ -9,9 +9,9 @@
 #include "../library/entries.h"
 #include "../library/library.h"
 #include "utils.h"
-#include "queue.h"
+#include "queue/queue.h"
 #include "albums/albums.h"
-#include "playlists.h"
+#include "playlists/playlists.h"
 
 enum class RepeatMode
 {
@@ -19,9 +19,6 @@ enum class RepeatMode
     All,
     Track
 };
-
-// Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
-// selection->signal_changed().connect(sigc::mem_fun(*this, &Queue::on_selection_changed));
 
 class Player
 {
