@@ -1,8 +1,27 @@
 // SPDX-License-Identifier: GPL-3.0
 // SPDX-FileCopyrightText: 2026 silver_gray
+#include <format>
 #include <iostream>
 #include <string>
+#include <vector>
 #include <gtkmm.h>
+#include "library/entries.h"
+#include "library/library.h"
+
+std::string formatTime(const float seconds)
+{
+    if (seconds < 0.0f)
+        return "--:--";
+
+    int total   = static_cast<int>(seconds);
+    int hours   = total / 3600;
+    int minutes = (total % 3600) / 60;
+    int secs    = total % 60;
+
+    if (hours > 0)
+        return std::format("{:02}:{:02}:{:02}", hours, minutes, secs);
+    return std::format("{:02}:{:02}", minutes, secs);
+}
 
 // Tree model columns:
 class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
@@ -10,7 +29,7 @@ class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
   public:
     std::deque<Gtk::TreeModelColumn<Glib::ustring>> string_columns;
 
-    Gtk::TreeModelColumn<Glib::ustring> &add_string_column()
+    Gtk::TreeModelColumn<Glib::ustring> &addStringColumn()
     {
         string_columns.emplace_back();
         Gtk::TreeModelColumn<Glib::ustring> &new_column = string_columns.back();
@@ -19,11 +38,11 @@ class TreeColumnSet : public Gtk::TreeModel::ColumnRecord
     }
 };
 
-Glib::RefPtr<Gtk::ListStore> setup_string_tree_view(Gtk::TreeView &tree_view, TreeColumnSet &column_set, const std::vector<Glib::ustring> &column_headers)
+Glib::RefPtr<Gtk::ListStore> setupStringTreeView(Gtk::TreeView &tree_view, TreeColumnSet &column_set, const std::vector<Glib::ustring> &column_headers)
 {
     for (unsigned int header_index = 0; header_index < column_headers.size(); ++header_index)
     {
-        column_set.add_string_column();
+        column_set.addStringColumn();
     }
 
     Glib::RefPtr<Gtk::ListStore> list_store_reference = Gtk::ListStore::create(column_set);
@@ -37,6 +56,45 @@ Glib::RefPtr<Gtk::ListStore> setup_string_tree_view(Gtk::TreeView &tree_view, Tr
     return list_store_reference;
 }
 
+class Queue
+{
+  public:
+    Queue();
+
+    TreeColumnSet                collumns;
+    Gtk::Box                     box;
+    Gtk::ScrolledWindow          window;
+    Gtk::TreeView                tree;
+    Glib::RefPtr<Gtk::ListStore> tree_refrence;
+};
+
+Queue::Queue()
+{
+    window.set_child(tree);
+
+    // Only show the scrollbars when they are necessary:
+    window.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
+    window.set_expand();
+
+    box.append(window);
+
+    std::vector<Glib::ustring> queue_column_headers = {"Title", "Album", "Artist", "Duration"};
+    tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
+
+    std::vector<AlbumEntry> albums = koji::library::getAlbums();
+    std::vector<SongEntry>  songs  = koji::library::getAlbumSongs(albums[0]);
+
+    // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
+    for (SongEntry &song : songs)
+    {
+        auto row                        = *(tree_refrence->append());
+        row[collumns.string_columns[0]] = song.title;
+        row[collumns.string_columns[1]] = song.album;
+        row[collumns.string_columns[2]] = song.artist;
+        row[collumns.string_columns[3]] = formatTime(song.duration);
+    }
+}
+
 class Window : public Gtk::Window
 {
   public:
@@ -47,84 +105,38 @@ class Window : public Gtk::Window
     // Signal handlers:
     void onNotebookSwitchPage(Gtk::Widget *page, guint page_num);
 
-    TreeColumnSet queue_tree_collumns;
-    TreeColumnSet album_tree_collumns;
-    TreeColumnSet playlist_tree_collumns;
-
-    // Child widgets:
+    // Main
     Gtk::Notebook tabbar_notebook;
 
-    // Queue Child widgets:
-    Gtk::Box                     queue_tab_box;
-    Gtk::ScrolledWindow          queue_scrollable_window;
-    Gtk::TreeView                queue_tree;
-    Glib::RefPtr<Gtk::ListStore> queue_tree_refrence;
+    Queue queue;
 
-    // Album Child widgets:
-    Gtk::Label album_label, playlist_label;
+    // Album
+    TreeColumnSet                album_collumns;
+    Gtk::Box                     album_tab_box;
+    Gtk::ScrolledWindow          album_window;
+    Gtk::TreeView                album_tree;
+    Glib::RefPtr<Gtk::ListStore> album_tree_refrence;
 
-    // Playlist Child widgets:
+    // Playlist
+    TreeColumnSet                playlist_collumns;
+    Gtk::Box                     playlist_tab_box;
+    Gtk::ScrolledWindow          playlist_window;
+    Gtk::TreeView                playlist_tree;
+    Glib::RefPtr<Gtk::ListStore> playlist_tree_refrence;
 };
 
-Window::Window() // : queue_tab_box(Gtk::Orientation::VERTICAL), album_label("Contents of album tab"), playlist_label("Contents of playlist tab")
+Window::Window()
 {
     set_title("Koji");
     set_default_size(1920, 1080);
     set_child(tabbar_notebook);
 
     // Add the TreeView, inside a ScrolledWindow, with the button underneath:
-    // queue_scrollable_window.set_margin_top(5);
-    queue_scrollable_window.set_child(queue_tree);
-
-    // Only show the scrollbars when they are necessary:
-    queue_scrollable_window.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);
-    queue_scrollable_window.set_expand();
-
-    queue_tab_box.append(queue_scrollable_window);
-
-    // Create the Tree model and view columns:
-    std::vector<Glib::ustring> queue_column_headers = {"Title", "Album", "Artist", "Duration"};
-    queue_tree_refrence                             = setup_string_tree_view(queue_tree, queue_tree_collumns, queue_column_headers);
-
-    // Fill the TreeView's model
-    auto row                                   = *(queue_tree_refrence->append());
-    row[queue_tree_collumns.string_columns[0]] = "1";
-    row[queue_tree_collumns.string_columns[1]] = "Billy Bob";
-    row[queue_tree_collumns.string_columns[2]] = "10";
-    row[queue_tree_collumns.string_columns[3]] = "15";
-
-    // Make all the columns reorderable:
-    // This is not necessary, but it's nice to show the feature.
-    // You can use TreeView::set_column_drag_function() to more
-    // finely control column drag and drop.
-    for (guint i = 0; i < 2; i++)
-    {
-        auto column = queue_tree.get_column(i);
-        column->set_reorderable();
-    }
-
-    album_label.set_valign(Gtk::Align::START);
-    playlist_label.set_valign(Gtk::Align::START);
-
-    album_label.set_halign(Gtk::Align::START);
-    playlist_label.set_halign(Gtk::Align::START);
 
     // Add the Notebook pages:
-    tabbar_notebook.append_page(queue_tab_box, "Queue");
-    tabbar_notebook.append_page(album_label, "Albums");
-    tabbar_notebook.append_page(playlist_label, "Playlists");
-
-    // for (int i = 0; i < 5; ++i) {
-    //     auto button = Gtk::Button(Glib::ustring("Queue Item " + std::to_string(i)));
-
-    //     // Optional: Connect signal
-    //     // button.signal_clicked().connect(sigc::mem_fun(*this, &Window::onButtonClick));
-
-    //     button.set_valign(Gtk::Align::START);
-    //     button.set_halign(Gtk::Align::START);
-
-    //     queue_box.append(button);
-    // }
+    tabbar_notebook.append_page(queue.box, "Queue");
+    tabbar_notebook.append_page(album_tab_box, "Albums");
+    tabbar_notebook.append_page(playlist_tab_box, "Playlists");
 
     tabbar_notebook.signal_switch_page().connect(sigc::mem_fun(*this, &Window::onNotebookSwitchPage));
 }
@@ -140,7 +152,7 @@ void Window::onNotebookSwitchPage(Gtk::Widget * /* page */, guint page_num)
 
 int main(int argc, char *argv[])
 {
-    auto app = Gtk::Application::create("org.gtkmm.example");
+    auto app = Gtk::Application::create("cc.silverfiles.koji");
 
     // Shows the window and returns when it is closed.
     return app->make_window_and_run<Window>(argc, argv);

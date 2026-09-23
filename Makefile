@@ -4,8 +4,8 @@ EXE = koji
 OUT_DIR = out
 
 
-# SOURCES = $(shell find src -name '*.cpp')
-SOURCES = src/main.cpp
+SOURCES = $(shell find src -name '*.cpp')
+# SOURCES = src/main.cpp
 
 OBJECTS = $(SOURCES:%.cpp=$(OUT_DIR)/%.o)
 FLAGS = -std=c++20 -g -Wall -Wformat $(shell pkg-config --cflags gtkmm-4.0 mpv taglib) 
