@@ -16,6 +16,7 @@ using namespace std;
 
 Player::Player()
 {
+    queue.setPlayer(this);
     albums.setPlayer(this);
     playlists.setPlayer(this);
 }

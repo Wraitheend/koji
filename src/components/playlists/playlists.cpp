@@ -3,7 +3,6 @@
 
 #include "playlists.h"
 #include "../player.h"
-#include <iostream>
 
 Playlists::Playlists()
 {
@@ -56,6 +55,4 @@ void Playlists::on_clicked(int n_press, double x, double y)
     std::vector<SongEntry> playlist_songs = koji::library::getPlaylistSongs(selected_playlist);
     player->clearQueue();
     player->addSongsToQueue(playlist_songs);
-
-    std::cout << "Clicked: " << selected_playlist.title << std::endl;
 }

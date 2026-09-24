@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "queue.h"
-#include <iostream>
+#include "../player.h"
 
 Queue::Queue()
 {
@@ -41,18 +41,18 @@ void Queue::update()
 
 void Queue::on_clicked(int n_press, double x, double y)
 {
+    double offset_y = y - tree.get_column(0)->get_button()->get_allocation().get_height();
+
     Gtk::TreeModel::Path path;
 
-    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(y), path))
+    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(offset_y), path))
         return;
 
-    Gtk::TreeModel::iterator iterator = tree_refrence->get_iter(path);
+    int selected_index = path[0];
 
-    if (!iterator)
+    if (selected_index < 0 || selected_index >= static_cast<int>(queue.size()))
         return;
 
-    Gtk::TreeModel::Row row = *iterator;
-    Glib::ustring title = row[collumns.string_columns[0]];
-
-    std::cout << "Selected: " << title << std::endl;
+    player->current_song = selected_index;
+    player->updateCurrentSong();
 }
