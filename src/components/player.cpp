@@ -130,6 +130,12 @@ void Player::toggleShuffle()
 {
     shuffle = !shuffle;
 
+    bool has_current_song = current_song >= 0 && current_song < static_cast<int>(queue.queue.size());
+    SongEntry currently_playing;
+
+    if (has_current_song)
+        currently_playing = queue.queue[current_song];
+
     if (shuffle)
     {
         queue.unshuffled_queue = queue.queue;
@@ -141,7 +147,19 @@ void Player::toggleShuffle()
         queue.queue = queue.unshuffled_queue;
         queue.unshuffled_queue.clear();
     }
+
+    if (has_current_song)
+    {
+        auto iterator = std::find(queue.queue.begin(), queue.queue.end(), currently_playing);
+
+        if (iterator != queue.queue.end())
+            current_song = static_cast<int>(std::distance(queue.queue.begin(), iterator));
+    }
+
+    queue.update();
+    queue.highlight(current_song);
 }
+
 void Player::updateVolume() { mpv_set_property_string(mpv_context, "volume", to_string(volume).c_str()); }
 
 void Player::stopPlayback()

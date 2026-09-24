@@ -16,6 +16,8 @@ class Queue
     void update();
     void setPlayer(Player *player_ptr) { player = player_ptr; }
 
+    void highlight(int index);
+
     std::vector<SongEntry>       queue;
     std::vector<SongEntry>       unshuffled_queue;
     TreeColumnSet                collumns;

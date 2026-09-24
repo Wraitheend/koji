@@ -38,6 +38,17 @@ void Queue::update()
         row[collumns.string_columns[3]] = formatTime(song.duration);
     }
 }
+void Queue::highlight(int index)
+{
+    if (index < 0 || index >= static_cast<int>(tree_refrence->children().size()))
+        return;
+
+    Gtk::TreeModel::Path path;
+    path.push_back(index);
+
+    tree.get_selection()->select(path);
+    tree.scroll_to_row(path);
+}
 
 void Queue::on_clicked(int n_press, double x, double y)
 {
