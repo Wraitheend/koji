@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 #include "footer.h"
 #include "../../library/entries.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 
 Footer::Footer() : Gtk::Box(Gtk::Orientation::VERTICAL, 4)
 {

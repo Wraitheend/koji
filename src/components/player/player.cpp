@@ -9,8 +9,8 @@
 #include <iterator>
 #include <string>
 #include <vector>
-#include "../library/entries.h"
-#include "utils.h"
+#include "../../library/entries.h"
+#include "../utils/utils.h"
 
 using namespace std;
 

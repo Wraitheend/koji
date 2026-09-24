@@ -5,8 +5,8 @@
 #include <format>
 #include <vector>
 #include <gtkmm.h>
-#include "../library/entries.h"
-#include "../library/library.h"
+#include "../../library/entries.h"
+#include "../../library/library.h"
 
 std::string formatTime(const float seconds);
 

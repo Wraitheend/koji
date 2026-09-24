@@ -6,7 +6,7 @@
 #include <gtkmm.h>
 #include "../../library/entries.h"
 #include "../../library/library.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 #include "../queue/queue.h"
 
 class Player;

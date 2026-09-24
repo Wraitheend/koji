@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <gtkmm.h>
-#include "components/player.h"
+#include "components/player/player.h"
 #include "components/footer/footer.h"
 
 class Window : public Gtk::Window

@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "playlists.h"
-#include "../player.h"
+#include "../player/player.h"
 
 Playlists::Playlists()
 {

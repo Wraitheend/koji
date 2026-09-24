@@ -3,7 +3,7 @@
 #pragma once
 
 #include <gtkmm.h>
-#include "../player.h"
+#include "../player/player.h"
 
 class Footer : public Gtk::Box
 {

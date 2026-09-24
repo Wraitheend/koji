@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "albums.h"
-#include "../player.h"
+#include "../player/player.h"
 
 Albums::Albums()
 {

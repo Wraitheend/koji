@@ -5,7 +5,7 @@
 #include <vector>
 #include <gtkmm.h>
 #include "../../library/entries.h"
-#include "../utils.h"
+#include "../utils/utils.h"
 
 class Player;
 

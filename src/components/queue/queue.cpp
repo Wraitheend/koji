@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "queue.h"
-#include "../player.h"
+#include "../player/player.h"
 
 Queue::Queue()
 {
