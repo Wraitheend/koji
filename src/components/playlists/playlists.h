@@ -12,6 +12,7 @@ class Playlists
 {
   public:
     Playlists();
+    void updateView();
 
     std::vector<PlaylistEntry>   playlists = koji::library::getPlaylists();
     TreeColumnSet                collumns;
@@ -19,4 +20,6 @@ class Playlists
     Gtk::ScrolledWindow          window;
     Gtk::TreeView                tree;
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
+  private:
+    void on_selection_changed();
 };

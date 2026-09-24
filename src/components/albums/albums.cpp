@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "albums.h"
+#include <iostream>
 
 Albums::Albums()
 {
@@ -17,11 +18,34 @@ Albums::Albums()
     std::vector<Glib::ustring> queue_column_headers = {"Artist", "Album"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
-    // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
+    updateView();
+    
+    Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
+    selection->signal_changed().connect(sigc::mem_fun(*this, &Albums::on_selection_changed));
+}
+
+
+void Albums::updateView()
+{
+    if (!(tree_refrence->children().size() == 0))
+        tree_refrence->clear();
     for (AlbumEntry &album : albums)
     {
         auto row                        = *(tree_refrence->append());
         row[collumns.string_columns[0]] = album.artist;
         row[collumns.string_columns[1]] = album.title;
     }
+}
+
+void Albums::on_selection_changed()
+{
+    Gtk::TreeModel::iterator iter = tree.get_selection()->get_selected();
+
+    if (!iter)
+        return;
+
+    Gtk::TreeModel::Row row = *iter;
+    Glib::ustring title = row[collumns.string_columns[0]];
+
+    std::cout << "Selected: " << title << std::endl;
 }

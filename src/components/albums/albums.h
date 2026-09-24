@@ -12,6 +12,7 @@ class Albums
 {
   public:
     Albums();
+    void updateView();
 
     std::vector<AlbumEntry>      albums = koji::library::getAlbums();
     TreeColumnSet                collumns;
@@ -19,4 +20,6 @@ class Albums
     Gtk::ScrolledWindow          window;
     Gtk::TreeView                tree;
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
+  private:
+    void on_selection_changed();
 };

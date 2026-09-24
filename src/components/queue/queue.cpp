@@ -8,6 +8,7 @@ Queue::Queue()
 {
     window.set_child(tree);
     tree.set_enable_search(false);
+    tree.set_rubber_banding(false);
 
     // Only show the scrollbars when they are necessary:
     window.set_policy(Gtk::PolicyType::AUTOMATIC, Gtk::PolicyType::AUTOMATIC);

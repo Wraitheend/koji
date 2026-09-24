@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "playlists.h"
+#include <iostream>
 
 Playlists::Playlists()
 {
@@ -17,10 +18,32 @@ Playlists::Playlists()
     std::vector<Glib::ustring> queue_column_headers = {"Playlist"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
-    // for (int i = 0; i < static_cast<int>(songs.size()); ++i)
+    updateView();
+    
+    Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
+    selection->signal_changed().connect(sigc::mem_fun(*this, &Playlists::on_selection_changed));
+}
+
+void Playlists::updateView()
+{
+    if (!(tree_refrence->children().size() == 0))
+        tree_refrence->clear();
     for (PlaylistEntry &playlist : playlists)
     {
         auto row                        = *(tree_refrence->append());
         row[collumns.string_columns[0]] = playlist.title;
     }
+}
+
+void Playlists::on_selection_changed()
+{
+    Gtk::TreeModel::iterator iter = tree.get_selection()->get_selected();
+
+    if (!iter)
+        return;
+
+    Gtk::TreeModel::Row row = *iter;
+    Glib::ustring title = row[collumns.string_columns[0]];
+
+    std::cout << "Selected: " << title << std::endl;
 }
