@@ -23,6 +23,7 @@ enum class RepeatMode
 class Player
 {
   public:
+    Player();
     bool init();
     void cleanup();
 

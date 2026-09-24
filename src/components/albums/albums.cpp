@@ -40,9 +40,11 @@ void Albums::update()
 
 void Albums::on_clicked(int n_press, double x, double y)
 {
+    double offset_y = y - tree.get_column(0)->get_button()->get_allocation().get_height();
+    
     Gtk::TreeModel::Path path;
 
-    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(y), path))
+    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(offset_y), path))
         return;
 
     Gtk::TreeModel::iterator iterator = tree_refrence->get_iter(path);

@@ -14,6 +14,13 @@
 
 using namespace std;
 
+Player::Player()
+{
+    albums.setQueue(&queue);
+    playlists.setQueue(&queue);
+}
+
+
 bool Player::init()
 {
     setlocale(LC_NUMERIC, "C");

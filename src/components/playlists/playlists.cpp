@@ -38,18 +38,19 @@ void Playlists::update()
 
 void Playlists::on_clicked(int n_press, double x, double y)
 {
+    double offset_y = y - tree.get_column(0)->get_button()->get_allocation().get_height();
+
     Gtk::TreeModel::Path path;
 
-    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(y), path))
+    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(offset_y), path))
         return;
 
-    Gtk::TreeModel::iterator iterator = tree_refrence->get_iter(path);
+    int selected_index = path[0];
 
-    if (!iterator)
+    if (selected_index < 0 || selected_index >= static_cast<int>(playlists.size()))
         return;
 
-    Gtk::TreeModel::Row row = *iterator;
-    Glib::ustring title = row[collumns.string_columns[0]];
+    PlaylistEntry &selected_playlist = playlists[selected_index];
 
-    std::cout << "Selected: " << title << std::endl;
+    std::cout << "Clicked: " << selected_playlist.title << std::endl;
 }
