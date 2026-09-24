@@ -21,5 +21,5 @@ class Playlists
     Gtk::TreeView                tree;
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
   private:
-    void on_selection_changed();
+    void on_clicked(int n_press, double x, double y);
 };

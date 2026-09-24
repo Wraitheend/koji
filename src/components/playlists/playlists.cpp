@@ -20,8 +20,9 @@ Playlists::Playlists()
 
     update();
     
-    Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
-    selection->signal_changed().connect(sigc::mem_fun(*this, &Playlists::on_selection_changed));
+    auto click_gesture = Gtk::GestureClick::create();
+    click_gesture->signal_pressed().connect(sigc::mem_fun(*this, &Playlists::on_clicked));
+    tree.add_controller(click_gesture);
 }
 
 void Playlists::update()
@@ -35,14 +36,19 @@ void Playlists::update()
     }
 }
 
-void Playlists::on_selection_changed()
+void Playlists::on_clicked(int n_press, double x, double y)
 {
-    Gtk::TreeModel::iterator iter = tree.get_selection()->get_selected();
+    Gtk::TreeModel::Path path;
 
-    if (!iter)
+    if (!tree.get_path_at_pos(static_cast<int>(x), static_cast<int>(y), path))
         return;
 
-    Gtk::TreeModel::Row row = *iter;
+    Gtk::TreeModel::iterator iterator = tree_refrence->get_iter(path);
+
+    if (!iterator)
+        return;
+
+    Gtk::TreeModel::Row row = *iterator;
     Glib::ustring title = row[collumns.string_columns[0]];
 
     std::cout << "Selected: " << title << std::endl;
