@@ -29,9 +29,6 @@ Window::Window()
     set_default_size(1920, 1080);
     set_child(tabbar_notebook);
 
-    // Add the TreeView, inside a ScrolledWindow, with the button underneath:
-
-    // Add the Notebook pages:
     if (!player.init())
         return;
 
@@ -43,12 +40,6 @@ Window::Window()
     controller->signal_key_pressed().connect(sigc::mem_fun(*this, &Window::onWindowKeyPressed), false);
     add_controller(controller);
 }
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Minus) && player_context.volume - 5 >= 0)
-//         updateVolume(player_context, -5);
-
-//     if (ImGui::IsKeyPressed(ImGuiKey::ImGuiKey_Equal) && player_context.volume + 5 <= 100)
-//         updateVolume(player_context, 5);
 
 bool Window::onWindowKeyPressed(guint keyval, guint, Gdk::ModifierType state)
 {
