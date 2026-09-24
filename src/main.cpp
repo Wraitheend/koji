@@ -14,6 +14,8 @@ class Window : public Gtk::Window
     Window();
     virtual ~Window();
 
+    bool update();
+
     Player player;
     Footer footer;
     Gtk::Notebook tabbar;
@@ -23,6 +25,13 @@ class Window : public Gtk::Window
   private:
     bool onWindowKeyPressed(guint keyval, guint keycode, Gdk::ModifierType state);
 };
+
+bool Window::update()
+{
+    player.update();
+    footer.update(player);
+    return true;
+}
 
 Window::Window()
 {
@@ -37,8 +46,6 @@ Window::Window()
     if (!player.init())
         return;
 
-    footer.update(player);
-
     tabbar.append_page(player.queue.box, "Queue");
     tabbar.append_page(player.albums.box, "Albums");
     tabbar.append_page(player.playlists.box, "Playlists");
@@ -46,6 +53,8 @@ Window::Window()
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(sigc::mem_fun(*this, &Window::onWindowKeyPressed), false);
     add_controller(controller);
+
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &Window::update), 250);
 }
 
 bool Window::onWindowKeyPressed(guint keyval, guint, Gdk::ModifierType state)

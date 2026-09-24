@@ -25,6 +25,7 @@ class Player
   public:
     Player();
     bool init();
+    void update();
     void cleanup();
 
     void togglePause();
@@ -32,6 +33,10 @@ class Player
     void toggleShuffle();
     void updateVolume();
     void stopPlayback();
+
+    void clearQueue();
+    void updateCurrentSong();
+    void addSongsToQueue(std::vector<SongEntry> &songs);
 
     int   volume   = 35;
     bool  paused   = false;

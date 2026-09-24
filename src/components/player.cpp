@@ -16,8 +16,8 @@ using namespace std;
 
 Player::Player()
 {
-    albums.setQueue(&queue);
-    playlists.setQueue(&queue);
+    albums.setPlayer(this);
+    playlists.setPlayer(this);
 }
 
 
@@ -49,6 +49,52 @@ bool Player::init()
     // queue.update();
     
     return true;
+}
+
+void Player::update()
+{
+    if (current_song == -1)
+        return;
+
+    double time_remaining = 0.0;
+    mpv_get_property(mpv_context, "time-pos", MPV_FORMAT_DOUBLE, &time_remaining);
+    position = static_cast<float>(time_remaining);
+
+    mpv_event *event = mpv_wait_event(mpv_context, 0);
+
+    if (event->event_id != MPV_EVENT_END_FILE)
+        return;
+
+    mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
+
+    if (end_file->reason != MPV_END_FILE_REASON_EOF)
+        return;
+    
+    if (current_song < 0 || current_song >= static_cast<int>(queue.queue.size()))
+    {
+        stopPlayback();
+        return;
+    }
+
+    if (repeat_mode == RepeatMode::Track)
+    {
+        updateCurrentSong();
+        return;
+    }
+
+    int next_song = current_song + 1;
+
+    if (next_song >= static_cast<int>(queue.queue.size()) && repeat_mode == RepeatMode::All)
+        current_song = 0;
+    else if (next_song >= static_cast<int>(queue.queue.size()))
+    {
+        stopPlayback();
+        return;
+    }
+    else
+        current_song = next_song;
+
+    updateCurrentSong();
 }
 
 void Player::cleanup() { mpv_destroy(mpv_context); }
@@ -105,86 +151,39 @@ void Player::stopPlayback()
     mpv_set_property_string(mpv_context, "pause", "yes");
 }
 
-// void updateCurrentSong(PlayerContext &player_context)
-// {
-//     player_context.paused = false;
-//     updatePause(player_context);
-//     const char *play_command[] = {"loadfile", player_context.current_song.path.c_str(), "replace", nullptr};
-//     mpv_command(player_context.mpv_context, play_command);
-// }
+void Player::clearQueue()
+{
+   queue.queue.clear();
+   queue.unshuffled_queue.clear();
+}
 
-// void addSongsToQueue(PlayerContext &player_context, vector<SongEntry> &songs)
-// {
-//     if (player_context.shuffle)
-//     {
-//         player_context.unshuffled_queue.insert(player_context.unshuffled_queue.end(), songs.begin(), songs.end());
-//         ranges::shuffle(songs, player_context.random_engine);
-//     }
+void Player::updateCurrentSong()
+{
+    if (current_song < 0 || current_song >= static_cast<int>(queue.queue.size()))
+        return;
+    
+    const char *play_command[] = {"loadfile", queue.queue[current_song].path.c_str(), "replace", nullptr};
+    mpv_command(mpv_context, play_command);
+}
 
-//     if (player_context.queue.empty())
-//     {
-//         player_context.current_song = songs[0];
-//         updateCurrentSong(player_context);
-//     }
 
-//     player_context.queue.insert(player_context.queue.end(), songs.begin(), songs.end());
-// }
+void Player::addSongsToQueue(std::vector<SongEntry> &songs)
+{
 
-// void cycleSong(PlayerContext& player_context)
-// {
-//     PlayerContext &context = player_context;
-//     vector<SongEntry> &queue = context.queue;
+    if (shuffle)
+    {
+        queue.unshuffled_queue.insert(queue.unshuffled_queue.end(), songs.begin(), songs.end());
+        ranges::shuffle(songs, random_engine);
+    }
+    bool empty_queue = queue.queue.empty();
+    
+    queue.queue.insert(queue.queue.end(), songs.begin(), songs.end());
+    queue.update();
 
-//     vector<SongEntry>::const_iterator iterator = std::find(queue.cbegin(), queue.cend(), context.current_song);
+    if (empty_queue)
+    {
+        current_song = 0;
+        updateCurrentSong();
+    }   
+}
 
-//     if (iterator == queue.cend())
-//         stopSong(player_context);
-//     else
-//     {
-//         const int song_index = distance(player_context.queue.cbegin(), iterator) + 1;
-
-//         if (player_context.repeat_mode == RepeatMode::Track)
-//             updateCurrentSong(player_context);
-//         else if (song_index >= queue.size() && context.repeat_mode == RepeatMode::All)
-//             context.current_song = queue.front();
-//         else if (song_index >= queue.size())
-//             stopSong(player_context);
-//         else
-//             context.current_song = queue[song_index];
-//     }
-
-//     updateCurrentSong(player_context);
-// }
-
-// bool songCycle(PlayerContext &player_context)
-// {
-//     if (player_context.current_song == SongEntry{})
-//         return true;
-
-//     double time_remaining;
-//     mpv_get_property(player_context.mpv_context, "time-pos", MPV_FORMAT_DOUBLE, &time_remaining);
-//     player_context.position_seconds = static_cast<float>(time_remaining);
-
-//     mpv_event *event = mpv_wait_event(player_context.mpv_context, 0);
-
-//     if (event->event_id == MPV_EVENT_END_FILE)
-//     {
-//         mpv_event_end_file *end_file = static_cast<mpv_event_end_file *>(event->data);
-
-//         if (end_file->reason == MPV_END_FILE_REASON_EOF)
-//             cycleSong(player_context);
-//     }
-
-//     return true;
-// }
-
-// bool pollEvents(PlayerContext &player_context)
-// {
-//     if (!songCycle(player_context))
-//         return false;
-
-//     if (!keyCycle(player_context))
-//         return false;
-
-//     return true;
-// }

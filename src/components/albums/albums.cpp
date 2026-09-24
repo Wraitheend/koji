@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 silver_gray
 
 #include "albums.h"
+#include "../player.h"
 #include <iostream>
 
 Albums::Albums()
@@ -53,6 +54,9 @@ void Albums::on_clicked(int n_press, double x, double y)
         return;
 
     AlbumEntry &selected_album = albums[selected_index];
+    std::vector<SongEntry> album_songs = koji::library::getAlbumSongs(selected_album);
+    player->clearQueue();
+    player->addSongsToQueue(album_songs);
 
     std::cout << "Clicked: " << selected_album.title << std::endl;
 }

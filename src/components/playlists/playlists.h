@@ -9,12 +9,14 @@
 #include "../utils.h"
 #include "../queue/queue.h"
 
+class Player;
+
 class Playlists
 {
   public:
     Playlists();
     void update();
-    void setQueue(Queue *queue_ptr) { queue = queue_ptr; }
+    void setPlayer(Player *player_ptr) { player = player_ptr; }
 
     std::vector<PlaylistEntry>   playlists = koji::library::getPlaylists();
     TreeColumnSet                collumns;
@@ -23,6 +25,6 @@ class Playlists
     Gtk::TreeView                tree;
     Glib::RefPtr<Gtk::ListStore> tree_refrence;
   private:
-    Queue *queue;
+    Player *player;
     void on_clicked(int n_press, double x, double y);
 };
