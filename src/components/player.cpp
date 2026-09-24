@@ -39,7 +39,7 @@ bool Player::init()
     updateVolume();
 
     // queue.queue = koji::library::getAlbumSongs(albums.albums[0]);
-    // queue.updateView();
+    // queue.update();
     
     return true;
 }

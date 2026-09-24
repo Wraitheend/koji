@@ -18,13 +18,13 @@ Playlists::Playlists()
     std::vector<Glib::ustring> queue_column_headers = {"Playlist"};
     tree_refrence                                   = setupStringTreeView(tree, collumns, queue_column_headers);
 
-    updateView();
+    update();
     
     Glib::RefPtr<Gtk::TreeSelection> selection = tree.get_selection();
     selection->signal_changed().connect(sigc::mem_fun(*this, &Playlists::on_selection_changed));
 }
 
-void Playlists::updateView()
+void Playlists::update()
 {
     if (!(tree_refrence->children().size() == 0))
         tree_refrence->clear();

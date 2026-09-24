@@ -12,7 +12,7 @@ class Albums
 {
   public:
     Albums();
-    void updateView();
+    void update();
 
     std::vector<AlbumEntry>      albums = koji::library::getAlbums();
     TreeColumnSet                collumns;

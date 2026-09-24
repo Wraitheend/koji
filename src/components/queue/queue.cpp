@@ -24,7 +24,7 @@ Queue::Queue()
     selection->signal_changed().connect(sigc::mem_fun(*this, &Queue::on_selection_changed));
 }
 
-void Queue::updateView()
+void Queue::update()
 {
     if (!(tree_refrence->children().size() == 0))
         tree_refrence->clear();

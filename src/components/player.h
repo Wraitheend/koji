@@ -43,7 +43,7 @@ class Player
 
     RepeatMode repeat_mode = RepeatMode::All;
 
-    int          current_song;
+    int          current_song = -1;
     std::mt19937 random_engine{std::random_device{}()};
     mpv_handle  *mpv_context = nullptr;
 };

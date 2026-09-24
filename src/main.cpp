@@ -6,6 +6,7 @@
 #include <vector>
 #include <gtkmm.h>
 #include "components/player.h"
+#include "components/footer/footer.h"
 
 class Window : public Gtk::Window
 {
@@ -13,11 +14,11 @@ class Window : public Gtk::Window
     Window();
     virtual ~Window();
 
-  protected:
-    // Main
-    Gtk::Notebook tabbar_notebook;
-
     Player player;
+    Footer footer;
+    Gtk::Notebook tabbar;
+    Gtk::Box main_window{Gtk::Orientation::VERTICAL};
+
 
   private:
     bool onWindowKeyPressed(guint keyval, guint keycode, Gdk::ModifierType state);
@@ -27,14 +28,20 @@ Window::Window()
 {
     set_title("Koji");
     set_default_size(1920, 1080);
-    set_child(tabbar_notebook);
+    set_child(main_window);
 
+    tabbar.set_vexpand(true);
+    main_window.append(tabbar);
+    main_window.append(footer);
+    
     if (!player.init())
         return;
 
-    tabbar_notebook.append_page(player.queue.box, "Queue");
-    tabbar_notebook.append_page(player.albums.box, "Albums");
-    tabbar_notebook.append_page(player.playlists.box, "Playlists");
+    footer.update(player);
+
+    tabbar.append_page(player.queue.box, "Queue");
+    tabbar.append_page(player.albums.box, "Albums");
+    tabbar.append_page(player.playlists.box, "Playlists");
 
     auto controller = Gtk::EventControllerKey::create();
     controller->signal_key_pressed().connect(sigc::mem_fun(*this, &Window::onWindowKeyPressed), false);
@@ -82,13 +89,13 @@ bool Window::onWindowKeyPressed(guint keyval, guint, Gdk::ModifierType state)
     }
     else if (keyval == GDK_KEY_Tab) // - `Tab`: Cycle tabs
     {
-        const int current_page = tabbar_notebook.get_current_page();
-        const int pages        = tabbar_notebook.get_n_pages();
+        const int current_page = tabbar.get_current_page();
+        const int pages        = tabbar.get_n_pages();
 
         if (current_page + 1 >= pages)
-            tabbar_notebook.set_current_page(0);
+            tabbar.set_current_page(0);
         else
-            tabbar_notebook.set_current_page(current_page + 1);
+            tabbar.set_current_page(current_page + 1);
 
         return true;
     }

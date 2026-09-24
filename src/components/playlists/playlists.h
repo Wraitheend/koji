@@ -12,7 +12,7 @@ class Playlists
 {
   public:
     Playlists();
-    void updateView();
+    void update();
 
     std::vector<PlaylistEntry>   playlists = koji::library::getPlaylists();
     TreeColumnSet                collumns;

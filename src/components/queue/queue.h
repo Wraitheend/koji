@@ -11,7 +11,7 @@ class Queue
 {
   public:
     Queue();
-    void updateView();
+    void update();
 
     std::vector<SongEntry>       queue;
     std::vector<SongEntry>       unshuffled_queue;
