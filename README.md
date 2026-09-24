@@ -84,7 +84,5 @@ For each song file in the playlist to display them appropriately they should hav
 ## Screenshots
 
 ![queue-tab](docs/screenshots/queue.png)
-![albums-tab](docs/screenshots/albums.png)
-![playlists-tab](docs/screenshots/playlists.png)
 
 **[DISCLAIMER](docs/DISCLAIMER.md)**
